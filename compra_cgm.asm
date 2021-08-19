@@ -1,18 +1,62 @@
+# Implemente um programa em linguagem assembly que simule o valor total de uma compra
+# no mercado. O programa deve ler as entradas do teclado dadas pelo usu√°rio e fornecer no
+# final o valor total do pedido.
+# Primeiramente, o Mars deve exibir a mensagem: "Digite o nome do produto: ".
+# Depois, ele deve ler como entrada um texto (nome do produto) terminado no
+# caractere ascii correspondente √† tecla enter.
+# Em seguida, o programa deve exibir a mensagem: "Insira o valor unit√°rio deste
+# produto: " e ler como entrada um n√∫mero do tipo float.
+# Posteriormente, o programa deve exibir a mensagem: "Insira a quantidade desejada
+# deste produto: " e ler como entrada um n√∫mero do tipo inteiro.
+# Ap√≥s o usu√°rio passar estas informa√ß√µes sobre o produto, o programa deve exibir a
+# seguinte mensagem: ‚ÄúDeseja comprar algo a mais? Se sim, digite 1. Caso contr√°rio,
+# digite 0. Resposta: ‚Äù. Em seguida, ele deve ler como entrada a resposta do usu√°rio. Se
+# a resposta for ‚Äú1‚Äù, o programa deve retornar √†s mensagens iniciais, pedindo nome,
+# valor unit√°rio e quantidade do produto.
+# O usu√°rio pode pedir at√© cinco produtos por compra. Ap√≥s o quinto produto, o
+# programa j√° deve encerrar a compra.
+# Quando a resposta for ‚Äú0‚Äù ou a compra for encerrada pelo programa, o Mars deve
+# gerar como sa√≠da uma lista contendo a quantidade de cada produto pedido, com o
+# respectivo valor unit√°rio e valor total do produto, bem como o valor total do pedido
+# de compra, conforme mostrado no exemplo abaixo. No exemplo, em azul est√° a
+# informa√ß√£o digitada pelo usu√°rio.
+# Exemplo:
+# Digite o nome do produto: caixa de uva
+# Insira o valor unit√°rio deste produto: 6.25
+# Insira a quantidade desejada deste produto: 5
+# Deseja comprar algo a mais? Se sim, digite 1. Caso contr√°rio, digite 0. Resposta: 1
+# Digite o nome do produto: leite
+# Insira o valor unit√°rio deste produto: 4.30
+# Insira a quantidade desejada deste produto: 12
+#Deseja comprar algo a mais? Se sim, digite 1. Caso contr√°rio, digite 0. Resposta: 0
+#
+# 2
+#
+# Sa√≠da:
+# Pedido:
+# 5x caixa de uva
+# Valor unit√°rio: R$ 6.25
+# Valor total do produto: R$ 31.25
+# 12x leite
+# Valor unit√°rio: R$ 4.30
+# Valor total do produto: 51.60
+# Valor total do pedido: R$ 82.85
+
 .data 
-	valores: .space 60 #Vetor que armazenar· os valores de valor unit·rio, quantidade e valor total
-	produto: .space 500 #Vari·vel que armazenar· o nome inserido do produto
-	produtos: .space 500 #Vetor que armazenar· os nomes de todos os produtos
+	valores: .space 60 #Vetor que armazenar√° os valores de valor unit√°rio, quantidade e valor total
+	produto: .space 500 #Vari√°vel que armazenar√° o nome inserido do produto
+	produtos: .space 500 #Vetor que armazenar√° os nomes de todos os produtos
 	
 	zero: .float 0.0
 	
 	linha: .asciiz "\n"
 	entrada1: .asciiz "Digite o nome do produto: "
-	entrada2: .asciiz "Insira o valor unit·rio deste produto: "
+	entrada2: .asciiz "Insira o valor unit√°rio deste produto: "
 	entrada3: .asciiz "Insira a quantidade desejada deste produto: " 
-	entrada4: .asciiz "Deseja comprar algo a mais? Se sim, digite 1. Caso contr·rio, digite 0. Resposta: "
+	entrada4: .asciiz "Deseja comprar algo a mais? Se sim, digite 1. Caso contr√°rio, digite 0. Resposta: "
 	saida1: .asciiz "Pedido:\n\n"
 	saida2: .asciiz "x "
-	saida3: .asciiz "Valor unit·rio: R$ "
+	saida3: .asciiz "Valor unit√°rio: R$ "
 	saida4: .asciiz "Valor total do produto: R$ "
 	saida5: .asciiz "Valor total do pedido: R$ "
 	
@@ -23,34 +67,34 @@ main:
 	li $s0, -100 #Iniciando indicador de tamanho dos nomes inseridos
 	
 entrada:
-	addi $t0, $t0, 4 #AvanÁa o ponteiro para a prÛxima posiÁ„o do vetor
-	addi $t1, $t1, 4 #AvanÁa o ponteiro para a prÛxima posiÁ„o do vetor
-	addi $s0, $s0, 100 #AvanÁa o indicador para o prÛximo espaÁo onde ser· inserido o nome
+	addi $t0, $t0, 4 #Avan√ßa o ponteiro para a pr√≥xima posi√ß√£o do vetor
+	addi $t1, $t1, 4 #Avan√ßa o ponteiro para a pr√≥xima posi√ß√£o do vetor
+	addi $s0, $s0, 100 #Avan√ßa o indicador para o pr√≥ximo espa√ßo onde ser√° inserido o nome
 
-	li $v0, 4 #Imprime o conte˙do de entrada 1
+	li $v0, 4 #Imprime o conte√∫do de entrada 1
 	la $a0, entrada1
 	syscall
 	
 	li $v0, 8 #Faz a leitura do produto
 	la $a0, produto
-	add $a0, $a0, $s0 #Passa o indicador com a posiÁ„o para o registrador a0
+	add $a0, $a0, $s0 #Passa o indicador com a posi√ß√£o para o registrador a0
 	la $a1, 100
 	syscall
 	
 	sw $a0, produtos($t1) #Armazena o nome no vetor "produtos"
 
-	li $v0, 4 #Imprime o conte˙do de entrada 2
+	li $v0, 4 #Imprime o conte√∫do de entrada 2
 	la $a0, entrada2
 	syscall
 	
-	li $v0, 6 #Faz leitura do valor unit·rio em float
+	li $v0, 6 #Faz leitura do valor unit√°rio em float
 	syscall
 	
 	swc1 $f0, valores($t0) #Passa o valor para o vetor
 	
-	addi $t0, $t0, 4 #AvanÁa o ponteiro para a prÛxima posiÁ„o do vetor
+	addi $t0, $t0, 4 #Avan√ßa o ponteiro para a pr√≥xima posi√ß√£o do vetor
 	
-	li $v0, 4 #Imprime o conte˙do de entrada 3
+	li $v0, 4 #Imprime o conte√∫do de entrada 3
 	la $a0, entrada3
 	syscall
 	
@@ -59,58 +103,58 @@ entrada:
 	
 	sw $v0, valores($t0) #Passa a quantidade para o vetor
 	
-	addi $t0, $t0, 4 #AvanÁa o ponteiro para a prÛxima posiÁ„o do vetor
+	addi $t0, $t0, 4 #Avan√ßa o ponteiro para a pr√≥xima posi√ß√£o do vetor
 	
 	mtc1 $v0, $f1 #Passa o valor inteiro em v0 para f1
 	cvt.s.w $f1, $f1 #Faz casting do valor inteiro em f1 para float
 	
-	mul.s $f0, $f0, $f1 #Faz a multiplicaÁ„o do valor unit·rio pela sua quantia
+	mul.s $f0, $f0, $f1 #Faz a multiplica√ß√£o do valor unit√°rio pela sua quantia
 	
 	swc1 $f0, valores($t0) #Armazena o resultado no vetor "valores"
 	
-	bgt $t0, 55, final #Analisa se j· foram 5 compras
+	bgt $t0, 55, final #Analisa se j√° foram 5 compras
 
 condicao:
 				
-	li $v0, 4 #Imprime o conte˙do de entrada 4
+	li $v0, 4 #Imprime o conte√∫do de entrada 4
 	la $a0, entrada4
 	syscall
 	
 	li $v0, 5 #Faz a leitura da resposta
 	syscall
 	
-	beq $v0, 1, entrada #Analisa se o resultado È 1, caso seja, retornar· ao comeÁo do looping
-	beq $v0, $zero, final #Analisa se o resultado È 0, caso seja, o programa ir· para o final
+	beq $v0, 1, entrada #Analisa se o resultado √© 1, caso seja, retornar√° ao come√ßo do looping
+	beq $v0, $zero, final #Analisa se o resultado √© 0, caso seja, o programa ir√° para o final
 	
-	j condicao #Necess·rio caso o valor inserido seja diferente de 0 ou 1
+	j condicao #Necess√°rio caso o valor inserido seja diferente de 0 ou 1
 	
 final:
-	lwc1 $f1, zero #Necess·rio para que possa imprimir valores em float
-	lwc1 $f2, zero #Iniciando um somador que armazenar· o valor total de todos os produtos
+	lwc1 $f1, zero #Necess√°rio para que possa imprimir valores em float
+	lwc1 $f2, zero #Iniciando um somador que armazenar√° o valor total de todos os produtos
 	li $t1, -4 #Iniciando ponteiro do vetor "produtos" para que possa ser imprimido o vetor
-	li $t2, -4 #Iniciando novamente um ponteiro do vetor "valores" que usar· o valor do primeiro ponteiro t0 como par‚metro para finalizar
+	li $t2, -4 #Iniciando novamente um ponteiro do vetor "valores" que usar√° o valor do primeiro ponteiro t0 como par√¢metro para finalizar
 	
 	li $v0, 4 #Quebra de linha
 	la $a0, linha
 	syscall
 	
-	li $v0, 4 #Imprime o conte˙do da saÌda 1
+	li $v0, 4 #Imprime o conte√∫do da sa√≠da 1
 	la $a0, saida1
 	syscall
 
 imprime:
-	addi $t2, $t2, 8 #AvanÁa duas posiÁıes com o ponteiro de "valores"
-	addi $t1, $t1, 4 #AvanÁa uma posiÁ„o com o ponteiro de "produto"
+	addi $t2, $t2, 8 #Avan√ßa duas posi√ß√µes com o ponteiro de "valores"
+	addi $t1, $t1, 4 #Avan√ßa uma posi√ß√£o com o ponteiro de "produto"
 
-	lw $a0, valores($t2) #Imprime o valor contido no vetor "valores" na posiÁ„o de t2
+	lw $a0, valores($t2) #Imprime o valor contido no vetor "valores" na posi√ß√£o de t2
 	li $v0, 1
 	syscall
 	
-	li $v0, 4 #Imprime o conte˙do da saÌda 2
+	li $v0, 4 #Imprime o conte√∫do da sa√≠da 2
 	la $a0, saida2
 	syscall
 	
-	li $v0, 4 #Imprime o nome contido no vetor "produtos" na posiÁ„o de t1
+	li $v0, 4 #Imprime o nome contido no vetor "produtos" na posi√ß√£o de t1
 	lw $a0, produtos($t1)
     syscall
 	
@@ -118,13 +162,13 @@ imprime:
 	la $a0, linha
 	syscall
 	
-	subi $t2, $t2, 4 #Retorna uma posiÁ„o com o ponteiro de "valores"
+	subi $t2, $t2, 4 #Retorna uma posi√ß√£o com o ponteiro de "valores"
 	
-	li $v0, 4 #Imprime o conte˙do da saÌda 3
+	li $v0, 4 #Imprime o conte√∫do da sa√≠da 3
 	la $a0, saida3
 	syscall
 
-	li $v0, 2 #Imprime o valor contido no vetor "valores" na posiÁ„o de t2
+	li $v0, 2 #Imprime o valor contido no vetor "valores" na posi√ß√£o de t2
 	lwc1 $f0, valores($t2) 
 	add.s $f12, $f1, $f0
 	syscall
@@ -133,13 +177,13 @@ imprime:
 	la $a0, linha
 	syscall
 	
-	addi $t2, $t2, 8 #AvanÁa duas posiÁıes com o ponteiro de "valores"
+	addi $t2, $t2, 8 #Avan√ßa duas posi√ß√µes com o ponteiro de "valores"
 	
-	li $v0, 4 #Imprime o conte˙do da saÌda 4
+	li $v0, 4 #Imprime o conte√∫do da sa√≠da 4
 	la $a0, saida4
 	syscall
 	
-	li $v0, 2 #Imprime o valor contido no vetor "valores" na posiÁ„o de t2
+	li $v0, 2 #Imprime o valor contido no vetor "valores" na posi√ß√£o de t2
 	lwc1 $f0, valores($t2) 
 	add.s $f12, $f1, $f0
 	syscall
@@ -154,12 +198,12 @@ imprime:
 	la $a0, linha
 	syscall
 	
-	bne $t2, $t0, imprime #CondiÁ„o que analisa se o ponteiro t2 j· est· no final
+	bne $t2, $t0, imprime #Condi√ß√£o que analisa se o ponteiro t2 j√° est√° no final
 	
-	li $v0, 4 #Imprime o conte˙do da saÌda 5
+	li $v0, 4 #Imprime o conte√∫do da sa√≠da 5
 	la $a0, saida5
 	syscall
 	
-	li $v0, 2 #Imprime o conte˙do do somador
+	li $v0, 2 #Imprime o conte√∫do do somador
 	add.s $f12, $f1, $f2
 	syscall
