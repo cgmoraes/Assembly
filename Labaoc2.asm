@@ -1,7 +1,30 @@
+# Implemente um programa em linguagem assembly que leia como entrada um
+# texto terminado no caractere ascii correspondente √† tecla enter. Depois, o
+# programa deve gerar as seguintes sa√≠das nesta ordem:
+# N√∫mero total de caracteres:
+# N√∫mero total de palavras:
+# Palavras repetidas:
+# A primeira linha deve imprimir a quantidade total de caracteres, sem contar o
+# √∫ltimo enter. Os espa√ßos e outros caracteres especiais tamb√©m s√£o contados.
+# A segunda linha deve imprimir a quantidade de palavras. N√∫meros e s√≠mbolos
+# n√£o contam como palavras. As palavras devem aparecer separadas por espa√ßos
+# e pela pontua√ß√£o das frases.
+# A terceira linha deve imprimir as palavras que se repetem pelo menos duas
+# vezes no texto separadas por espa√ßos.
+# Exemplo:
+# Oi, desculpe por n√£o te ligar hoje √†s 8:00. Estava muito frio e n√£o te
+# encontrei em casa.
+# Sa√≠da:
+# N√∫mero total de caracteres: 89
+# N√∫mero total de palavras: 17
+# Palavras repetidas: n√£o te
+# Cada uma das sa√≠das deve ser implementada em uma chamada de
+# procedimento separada.
+
 .data
 	mensagem: .asciiz "Insira o texto: "
-	mensagem1: .asciiz "N˙mero total de caracteres: "
-	mensagem2: .asciiz "N˙mero total de palavras: "
+	mensagem1: .asciiz "N√∫mero total de caracteres: "
+	mensagem2: .asciiz "N√∫mero total de palavras: "
 	mensagem3: .asciiz "Palavras repetidas: "
 	palavrasrep: .asciiz "                                                               "
 	enter: .asciiz "\n"
@@ -17,29 +40,29 @@
 	syscall
 		
 	move $t0, $a0 
-	li $t6, -1 #inicia um ponteiro que indica a ultima posiÁ„o dos caracteres inseridos que possivelmente repetem
-	li $t7, -1 #inicia um ponteiro que indica a primeira posiÁ„o dos caracteres inseridos que possivelmente repetem
+	li $t6, -1 #inicia um ponteiro que indica a ultima posi√ß√£o dos caracteres inseridos que possivelmente repetem
+	li $t7, -1 #inicia um ponteiro que indica a primeira posi√ß√£o dos caracteres inseridos que possivelmente repetem
 	
 caracteres:
-	lb $a0, ($t0) #passa a primeira posiÁ„o do texto
+	lb $a0, ($t0) #passa a primeira posi√ß√£o do texto
 
-	beq $a0, 10, fimC #analisa se est· no final da string
+	beq $a0, 10, fimC #analisa se est√° no final da string
 		
 	addi $t1, $t1, 1 #contador de caracteres
-	add $t0, $t0, 1 #avanÁa uma posiÁ„o na string
+	add $t0, $t0, 1 #avan√ßa uma posi√ß√£o na string
 	j caracteres
       
 fimC:  
-	sub $t0, $t0, $t1 #retorna a posiÁ„o inicial do texto
+	sub $t0, $t0, $t1 #retorna a posi√ß√£o inicial do texto
    	
-palavras: #conta o n˙mero de palavras
+palavras: #conta o n√∫mero de palavras
   	lb $a0, ($t0)
    	
 	beq $a0, 10, fimP
 	beq $a0, 0, fimP
 	bgt $a0, 64, acrescenta
    	
-passo: #parte para a prÛxima posiÁ„o do texto
+passo: #parte para a pr√≥xima posi√ß√£o do texto
 	add $t0,$t0,1
 	j palavras
    	
@@ -61,26 +84,26 @@ espaco:
 	
 	j espaco
 	
-repeticao: #atualiza a posiÁ„o referente ‡s palavras
-	la $t4, ($t0) #obtÈm a posiÁ„o seguinte a palavra no texto
+repeticao: #atualiza a posi√ß√£o referente √†s palavras
+	la $t4, ($t0) #obt√©m a posi√ß√£o seguinte a palavra no texto
 
 retorna:
-	la $t3, palavrasrep($t7) #passa a primeira posiÁ„o da palavra presente na vari·vel
+	la $t3, palavrasrep($t7) #passa a primeira posi√ß√£o da palavra presente na vari√°vel
 	lb $a0, ($t3)
 	
-repeticao1: #analisa se o caracter presente na variavel e no texto s„o iguais
+repeticao1: #analisa se o caracter presente na variavel e no texto s√£o iguais
 	lb $t5, ($t4)
 	beq $t5, 10, limpa
 	beq $t5, 32, repeticao2
 	addi $t4, $t4, 1
 	j repeticao1
 	
-repeticao2: #caso os caracteres sejam iguais, analisa se o caracter anterior no texto foi um espaÁo
+repeticao2: #caso os caracteres sejam iguais, analisa se o caracter anterior no texto foi um espa√ßo
 	addi $t4, $t4, 1
 	lb $t5, ($t4)
 	bne $a0, $t5, repeticao1
 
-analisa: #analisa se os demais caracteres s„o iguais para ent„o poder concluir que s„o as mesmas palavras
+analisa: #analisa se os demais caracteres s√£o iguais para ent√£o poder concluir que s√£o as mesmas palavras
 	addi $t3, $t3, 1
 	addi $t4, $t4, 1
 	lb $a0, ($t3)
@@ -91,11 +114,11 @@ analisa: #analisa se os demais caracteres s„o iguais para ent„o poder concluir q
 	
 	j analisa
 	
-atualiza: #atualiza o ponteiro referente a primeira posiÁ„o da palavra a ser inserida
+atualiza: #atualiza o ponteiro referente a primeira posi√ß√£o da palavra a ser inserida
 	move $t7, $t6
 	j passo
 	
-limpa: #obtÈm a posiÁ„o do primeiro caracter da palavra na vari·vel a ser removida
+limpa: #obt√©m a posi√ß√£o do primeiro caracter da palavra na vari√°vel a ser removida
 	move $s1, $t7
 	li $s0, 32
 
@@ -106,14 +129,14 @@ limpa1: #limpa a palavra inserida
 	beq $t3, 32, limpa2
 	j limpa1
 	
-limpa2: #atualiza o ponteiro refenrete a primeira posiÁ„o da palavra inserida
+limpa2: #atualiza o ponteiro refenrete a primeira posi√ß√£o da palavra inserida
 	subi $t7, $t7, 1
 	move $t6, $t7
 	j passo
    		
 fimP:
 	li $s0, 10
-	sb $s0, palavrasrep($t6) #adiciona um \n no final da vari·vel com as palavras repetidas
+	sb $s0, palavrasrep($t6) #adiciona um \n no final da vari√°vel com as palavras repetidas
 	
 	#imprime o resultado
 	
